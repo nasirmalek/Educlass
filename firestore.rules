@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    function isTeacher() {
+      return isAuthenticated() && getUserData().role == 'teacher';
+    }
+
+    function isStudent() {
+      return isAuthenticated() && getUserData().role == 'student';
+    }
+
+    // Users collection rules
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow create: if isAuthenticated() && 
+        request.auth.uid == userId &&
+        request.resource.data.keys().hasAll(['email', 'role', 'createdAt']) &&
+        (request.resource.data.role == 'teacher' || request.resource.data.role == 'student');
+      allow update: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Classes collection rules
+    match /classes/{classId} {
+      // Allow read for authenticated users
+      allow read: if request.auth != null;
+      
+      // Allow teachers to create classes
+      allow create: if isTeacher() && 
+        request.resource.data.teacherId == request.auth.uid &&
+        request.resource.data.keys().hasAll(['name', 'teacherId', 'students', 'code', 'description', 'createdAt']) &&
+        request.resource.data.students.size() == 0;
+      
+      // Allow updates based on role
+      allow update: if 
+        // Teachers can update their own classes
+        (isTeacher() && resource.data.teacherId == request.auth.uid) ||
+        
+        // Students can join classes by adding themselves to the students array
+        (isStudent() && 
+         // Ensure only student-related fields are modified
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['students']) &&
+         // Ensure teacherId and other fields remain unchanged
+         request.resource.data.teacherId == resource.data.teacherId &&
+         request.resource.data.name == resource.data.name &&
+         request.resource.data.description == resource.data.description &&
+         request.resource.data.code == resource.data.code &&
+         request.resource.data.createdAt == resource.data.createdAt &&
+         // Ensure all existing students remain
+         request.resource.data.students.hasAll(resource.data.students) &&
+         // Ensure only one new student is added
+         request.resource.data.students.size() == resource.data.students.size() + 1 &&
+         // Ensure the new student is the authenticated user
+         request.resource.data.students[request.resource.data.students.size() - 1] == request.auth.uid);
+      
+      // Only teachers can delete their own classes
+      allow delete: if isTeacher() && 
+        resource.data.teacherId == request.auth.uid;
+    }
+  }
+}
