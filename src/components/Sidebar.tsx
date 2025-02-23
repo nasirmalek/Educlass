@@ -1,17 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { 
-  LayoutDashboard, 
-  BookOpen, 
-  FileText, 
-  TestTube2, 
-  Users2
-} from 'lucide-react';
+import { LayoutDashboard, BookOpen, FileText, TestTube2, Users2, Menu } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
+  const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
     { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -24,7 +19,12 @@ const Sidebar: React.FC = () => {
   if (!user) return null;
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen">
+    <aside className={`w-64 bg-white border-r border-gray-200 min-h-screen ${isOpen ? 'block' : 'hidden'} md:block`}>
+      <div className="md:hidden p-4">
+        <button onClick={() => setIsOpen(!isOpen)}>
+          <Menu className="h-6 w-6" />
+        </button>
+      </div>
       <nav className="mt-8 space-y-1 px-2">
         {navItems.map((item) => (
           <NavLink

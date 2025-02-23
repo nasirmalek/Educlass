@@ -42,3 +42,113 @@
   transform: translateY(0);
   transition: opacity 300ms, transform 300ms;
 }
+
+/* Media Queries */
+
+/* Mobile styles */
+@media (max-width: 600px) {
+  .container {
+    padding: 0 10px;
+  }
+
+  .notification {
+    font-size: 14px;
+  }
+
+  .notification-title {
+    font-size: 16px;
+  }
+
+  .notification-message {
+    font-size: 14px;
+  }
+
+  .notification-time {
+    font-size: 12px;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar-menu {
+    display: none;
+  }
+
+  .navbar-toggle {
+    display: block;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .notification {
+    font-size: 16px;
+  }
+
+  .notification-title {
+    font-size: 18px;
+  }
+
+  .notification-message {
+    font-size: 16px;
+  }
+
+  .notification-time {
+    font-size: 14px;
+  }
+
+  .navbar {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .navbar-menu {
+    display: flex;
+  }
+
+  .navbar-toggle {
+    display: none;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1025px) {
+  .container {
+    padding: 0 30px;
+  }
+
+  .notification {
+    font-size: 18px;
+  }
+
+  .notification-title {
+    font-size: 20px;
+  }
+
+  .notification-message {
+    font-size: 18px;
+  }
+
+  .notification-time {
+    font-size: 16px;
+  }
+
+  .navbar {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .navbar-menu {
+    display: flex;
+  }
+
+  .navbar-toggle {
+    display: none;
+  }
+}

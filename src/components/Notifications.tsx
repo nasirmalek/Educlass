@@ -1,26 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bell } from 'lucide-react';
 
 const Notifications: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  
-  // Mock notifications - in a real app, these would come from your backend
-  const notifications = [
-    {
-      id: 1,
-      title: 'New Assignment',
-      message: 'Math homework due tomorrow',
-      time: '1 hour ago',
+  const [notifications, setNotifications] = useState<{ id: number; title: string; message: string; time: string; read: boolean }[]>([]);
+
+  useEffect(() => {
+    // Simulate fetching notifications from backend
+    // In a real app, replace this with an API call
+    const fetchNotifications = async () => {
+      // Mock fetching notifications
+      const fetchedNotifications: { id: number; title: string; message: string; time: string; read: boolean }[] = [];
+      setNotifications(fetchedNotifications);
+    };
+
+    fetchNotifications();
+
+    // Simulate user login notification
+    const loginNotification = {
+      id: Date.now(),
+      title: 'You logged in successfully',
+      message: 'Welcome back!',
+      time: 'Just now',
       read: false
-    },
-    {
-      id: 2,
-      title: 'Test Reminder',
-      message: 'Physics test next week',
-      time: '2 hours ago',
-      read: true
-    }
-  ];
+    };
+    setNotifications(prevNotifications => [loginNotification, ...prevNotifications]);
+  }, []);
+
+  const handleNotificationClick = (id: number) => {
+    setNotifications(notifications.map(notification =>
+      notification.id === id ? { ...notification, read: true } : notification
+    ));
+  };
 
   return (
     <div className="relative">
@@ -46,6 +57,7 @@ const Notifications: React.FC = () => {
                   <div
                     key={notification.id}
                     className={`px-4 py-3 hover:bg-gray-50 ${!notification.read ? 'bg-blue-50' : ''}`}
+                    onClick={() => handleNotificationClick(notification.id)}
                   >
                     <p className="text-sm font-medium text-gray-900">{notification.title}</p>
                     <p className="text-sm text-gray-500">{notification.message}</p>
