@@ -4,24 +4,28 @@ interface User {
   id: string;
   role: string;
   email: string;
-  classId: string; // Add this line
+  classId?: string; // Optional classId
 }
 
 interface AuthState {
-  user: { id: string; role: string; email: string } | null;
+  user: User | null;
   token: string | null;
 }
 
+// Load user and token from localStorage on initial state
 const initialState: AuthState = {
-  user: null,
-  token: null,
+  user: JSON.parse(localStorage.getItem('user') || 'null'),
+  token: localStorage.getItem('token') || null,
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<{ user: { id: string; role: string; email: string }; token: string }>) => {
+    login: (
+      state,
+      action: PayloadAction<{ user: User; token: string }>
+    ) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
       localStorage.setItem('token', action.payload.token);
@@ -33,13 +37,20 @@ const authSlice = createSlice({
       localStorage.removeItem('token');
       localStorage.removeItem('user');
     },
-    setUser: (state, action: PayloadAction<{ user: { id: string; role: string; email: string }; token: string } | null>) => {
+    setUser: (
+      state,
+      action: PayloadAction<{ user: User; token: string } | null>
+    ) => {
       if (action.payload) {
         state.user = action.payload.user;
         state.token = action.payload.token;
+        localStorage.setItem('token', action.payload.token);
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
       } else {
         state.user = null;
         state.token = null;
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
       }
     },
   },

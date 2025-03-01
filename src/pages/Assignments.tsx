@@ -11,7 +11,11 @@ interface Assignment {
   completed?: boolean;
 }
 
-const Assignments: React.FC = () => {
+interface AssignmentsProps {
+  classId: string;
+}
+
+const Assignments: React.FC<AssignmentsProps> = ({ classId }) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);
@@ -25,7 +29,7 @@ const Assignments: React.FC = () => {
   const [editingAssignment, setEditingAssignment] = useState<Assignment | null>(null);
 
   useEffect(() => {
-    // Fetch assignments from the database or API
+    // Fetch assignments from the database or API based on classId
     const fetchAssignments = async () => {
       // Replace with your data fetching logic
       const fetchedAssignments: Assignment[] = [
@@ -46,7 +50,7 @@ const Assignments: React.FC = () => {
     };
 
     fetchAssignments();
-  }, []);
+  }, [classId]);
 
   const handleAddAssignment = () => {
     setShowAddAssignmentModal(true);

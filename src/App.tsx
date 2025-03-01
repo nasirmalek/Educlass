@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import { Provider, useDispatch } from 'react-redux';
 import { store } from './store/store';
@@ -11,7 +11,6 @@ import Dashboard from './pages/Dashboard';
 import Classes from './pages/Classes';
 import Lectures from './pages/Lectures';
 import Assignments from './pages/Assignments';
-import Tests from './pages/Tests';
 import Settings from './pages/Settings';
 import { auth } from './lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -56,10 +55,9 @@ function AppRoutes() {
       <Route element={<Layout />}>
         <Route element={<PrivateRoute><Outlet /></PrivateRoute>}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/classes" element={<Classes />} />
-          <Route path="/lectures" element={<Lectures />} />
-          <Route path="/assignments" element={<Assignments />} />
-          <Route path="/tests" element={<Tests />} />
+          <Route path="/classes" element={<Classes onViewChange={(newView) => console.log(newView)} />} />
+          <Route path="/lectures" element={<Lectures classId="someClassId" />} />
+          <Route path="/assignments" element={<Assignments classId="someClassId" />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>

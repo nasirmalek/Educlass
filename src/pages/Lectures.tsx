@@ -8,7 +8,12 @@ interface Lecture {
   videoUrl: string;
 }
 
-const Lectures: React.FC = () => {
+interface LecturesProps {
+  classId: string;
+  // Add other props here if any
+}
+
+const Lectures: React.FC<LecturesProps> = ({ classId }) => {
   const [lectures, setLectures] = useState<Lecture[]>([]);
 
   useEffect(() => {
@@ -33,7 +38,7 @@ const Lectures: React.FC = () => {
     };
 
     fetchLectures();
-  }, []);
+  }, [classId]);
 
   return (
     <div className="container mx-auto px-4 py-8">
