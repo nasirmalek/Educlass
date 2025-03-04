@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { LayoutDashboard, BookOpen, FileText, Users2, Menu, X } from 'lucide-react';
+import { BookOpen, FileText, Menu, X } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const [isOpen, setIsOpen] = useState(true);
+  const { classId } = useParams<{ classId: string }>();
 
   if (!user) return null;
 
   const navItems = [
-    { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/classes', icon: Users2, label: 'Classes' },
-    { to: '/lectures', icon: BookOpen, label: 'Lectures' },
-    { to: '/assignments', icon: FileText, label: 'Assignments' }
+    { to: `/classes/${classId}/lectures`, icon: BookOpen, label: 'Lectures' },
+    { to: `/classes/${classId}/assignments`, icon: FileText, label: 'Assignments' },
+    { to: `/classes/${classId}/announcement`, icon: FileText, label: 'Announcements' }
   ];
 
   const toggleSidebar = () => {
@@ -68,11 +68,6 @@ const Sidebar: React.FC = () => {
               <NavLink
                 key={item.to}
                 to={item.to}
-                onClick={() => {
-                  if (window.innerWidth < 768) {
-                    setIsOpen(false);
-                  }
-                }}
                 className={({ isActive }) =>
                   `flex items-center px-4 py-2.5 text-sm font-medium rounded-md transition-all duration-200 hover:bg-gray-50 hover:text-gray-900 ${
                     isActive ? "bg-indigo-50 text-indigo-600" : "text-gray-600"

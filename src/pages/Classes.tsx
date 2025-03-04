@@ -5,8 +5,7 @@ import { RootState } from '../store/store';
 import { Class, ClassInput } from '../types/class';
 import { db } from '../lib/firebase';
 import { collection, addDoc, getDocs, updateDoc, doc, query, where } from 'firebase/firestore';
-import Lectures from './Lectures';
-import Assignments from './Assignments';
+import { useNavigate } from 'react-router-dom';
 
 interface ClassesProps {
   onViewChange: (newView: 'classes' | 'lectures' | 'assignments') => void;
@@ -24,7 +23,7 @@ const Classes: React.FC<ClassesProps> = ({ onViewChange }) => {
     name: '',
     description: '',
   });
-  const [selectedClass, setSelectedClass] = useState<Class | null>(null);
+  const navigate = useNavigate();
 
   const fetchClasses = async () => {
     setLoading(true);
@@ -138,48 +137,13 @@ const Classes: React.FC<ClassesProps> = ({ onViewChange }) => {
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-indigo-600" />
         </div>
-      ) : selectedClass ? (
-        <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">{selectedClass.name}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Lectures</h3>
-              <Lectures classId={selectedClass.id} />
-            </div>
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Assignments</h3>
-              <Assignments classId={selectedClass.id} />
-            </div>
-          </div>
-          <button
-            onClick={() => setSelectedClass(null)}
-            className="mt-4 px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-600 text-white text-sm sm:text-base rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transform hover:scale-105 transition-all duration-200"
-          >
-            Back to Classes
-          </button>
-        </div>
-      ) : classes.length === 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="col-span-full flex flex-col items-center justify-center p-8 sm:p-12 bg-white rounded-lg border-2 border-dashed border-gray-300">
-            <Users2 className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mb-4" />
-            <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2 text-center">
-              No classes yet
-            </h3>
-            <p className="text-sm sm:text-base text-gray-500 text-center mb-4">
-              {user?.role === 'teacher'
-                ? "Start by creating your first class"
-                : "Join a class using a class code"}
-            </p>
-            {renderActionButton()}
-          </div>
-        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {classes.map((classItem) => (
             <div
               key={classItem.id}
               className="bg-white p-4 sm:p-6 rounded-lg shadow-md transform hover:scale-[1.01] transition-all duration-200"
-              onClick={() => setSelectedClass(classItem)}
+              onClick={() => navigate(`/classes/${classItem.id}`)}
             >
               <div className="flex items-start justify-between">
                 <div>

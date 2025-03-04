@@ -9,9 +9,11 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Classes from './pages/Classes';
+import ClassDetails from './pages/ClassDetails';
 import Lectures from './pages/Lectures';
 import Assignments from './pages/Assignments';
 import Settings from './pages/Settings';
+import Announcement from './pages/Announcement';
 import { auth } from './lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { setUser } from './store/slices/authSlice';
@@ -56,8 +58,10 @@ function AppRoutes() {
         <Route element={<PrivateRoute><Outlet /></PrivateRoute>}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/classes" element={<Classes onViewChange={(newView) => console.log(newView)} />} />
-          <Route path="/lectures" element={<Lectures classId="someClassId" />} />
-          <Route path="/assignments" element={<Assignments classId="someClassId" />} />
+          <Route path="/classes/:classId" element={<ClassDetails />} />
+          <Route path="/classes/:classId/lectures" element={<Lectures classId="someClassId" />} />
+            <Route path="/classes/:classId/assignments" element={<Assignments classId="someClassId" />} />
+            <Route path="/classes/:classId/announcement" element={<Announcement />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
