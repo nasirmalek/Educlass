@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Users2, Plus, KeyRound, BookOpen } from 'lucide-react';
+import { Plus, KeyRound, BookOpen } from 'lucide-react';
 import { RootState } from '../store/store';
 import { Class, ClassInput } from '../types/class';
 import { db } from '../lib/firebase';
